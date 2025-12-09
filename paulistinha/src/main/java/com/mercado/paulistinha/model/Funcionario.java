@@ -21,7 +21,6 @@ public class Funcionario {
     private String nome;
     private String cpf;
     private String senha;
-    private double salario;
     private String telefone;
     private String endereco;
 

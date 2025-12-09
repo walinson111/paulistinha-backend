@@ -17,6 +17,10 @@ public class FuncionarioUserDetails implements UserDetails {
         this.funcionario = funcionario;
     }
 
+    public Funcionario getFuncionario() {
+        return funcionario;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + funcionario.getCargo().name()));

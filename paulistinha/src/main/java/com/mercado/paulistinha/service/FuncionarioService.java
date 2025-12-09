@@ -51,7 +51,6 @@ public class FuncionarioService {
         existente.setNome(novosDados.getNome());
         existente.setTelefone(novosDados.getTelefone());
         existente.setEndereco(novosDados.getEndereco());
-        existente.setSalario(novosDados.getSalario());
         existente.setCargo(novosDados.getCargo());
 
         if (!existente.getCpf().equals(novosDados.getCpf())) {
