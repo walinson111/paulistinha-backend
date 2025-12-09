@@ -9,23 +9,27 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.mercado.paulistinha.auth.CustomSuccessHandler;
 import com.mercado.paulistinha.service.FuncionarioUserDetailsService;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final FuncionarioUserDetailsService userDetailsService;
-
-    public SecurityConfig(FuncionarioUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+    private final CustomSuccessHandler successHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
             .csrf(csrf -> csrf.disable())
+
             .authorizeHttpRequests(auth -> auth
+
                 .requestMatchers(HttpMethod.GET, "/funcionarios/**").hasRole("GERENTE")
                 .requestMatchers(HttpMethod.POST, "/funcionarios/**").hasRole("GERENTE")
                 .requestMatchers(HttpMethod.PUT, "/funcionarios/**").hasRole("GERENTE")
@@ -33,8 +37,21 @@ public class SecurityConfig {
 
                 .anyRequest().authenticated()
             )
-            .userDetailsService(userDetailsService)
-            .httpBasic();
+
+            .formLogin(form -> form
+                .loginPage("/login") 
+                .loginProcessingUrl("/login")
+                .successHandler(successHandler)
+                .permitAll()
+            )
+
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            )
+
+            .userDetailsService(userDetailsService);
 
         return http.build();
     }
@@ -44,5 +61,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+
 
 
