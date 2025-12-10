@@ -2,8 +2,6 @@ package com.mercado.paulistinha.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,10 +39,8 @@ public class ProdutoController {
     }
 
     @PostMapping
-    public ResponseEntity<Produto> criarProduto(@RequestBody ProdutoCreateDTO dto,
-                                                @RequestParam(required = false) String descricao) {
-        Produto produtoCriado = produtoService.criarProduto(dto, descricao);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
+    public Produto criarProduto(@RequestBody ProdutoCreateDTO dto) {
+        return produtoService.criarProduto(dto);
     }
 
     @DeleteMapping("/{id}")

@@ -6,5 +6,6 @@ public record ProdutoCreateDTO(
     String nome,
     double preco,
     Categoria categoria,
-    int quantidade   
+    int quantidade,
+    String descricao   
 ) {}

@@ -20,7 +20,8 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
-    public Produto criarProduto(ProdutoCreateDTO dto, String descricaoOpcional) {
+    public Produto criarProduto(ProdutoCreateDTO dto) {
+
         if (produtoRepository.findByNome(dto.nome()).isPresent()) {
             throw new ProdutoJaExisteException("Já existe um produto com o nome: " + dto.nome());
         }
@@ -30,10 +31,11 @@ public class ProdutoService {
         produto.setPreco(dto.preco());
         produto.setCategoria(dto.categoria());
         produto.setQuantidade(dto.quantidade());
-        produto.setDescricao(descricaoOpcional);
+        produto.setDescricao(dto.descricao());
 
         return produtoRepository.save(produto);
     }
+
 
     public List<Produto> listarProdutos() {
         return produtoRepository.findAll();
