@@ -23,7 +23,7 @@ public class SeedConfig {
             if (repo.findByCpf("11111111111").isEmpty()) {
 
                 Funcionario gerente = new Funcionario();
-                gerente.setNome("Gerente Inicial");
+                gerente.setNome("Adilson Moreira");
                 gerente.setCpf("11111111111");
                 gerente.setSenha(encoder.encode("123"));
                 gerente.setCargo(Cargo.GERENTE);
