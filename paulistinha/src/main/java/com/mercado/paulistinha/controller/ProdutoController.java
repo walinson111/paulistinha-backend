@@ -2,6 +2,8 @@ package com.mercado.paulistinha.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercado.paulistinha.dto.produto.ProdutoCreateDTO;
 import com.mercado.paulistinha.model.Produto;
 import com.mercado.paulistinha.service.AuditLogService;
 import com.mercado.paulistinha.service.ProdutoService;
@@ -37,10 +40,10 @@ public class ProdutoController {
     }
 
     @PostMapping
-    public Produto criar(@RequestBody Produto produto) {
-        Produto criado = produtoService.salvarProduto(produto);
-        auditLogService.registrar("CRIAR", criado, 0);
-        return criado;
+    public ResponseEntity<Produto> criarProduto(@RequestBody ProdutoCreateDTO dto,
+                                                @RequestParam(required = false) String descricao) {
+        Produto produtoCriado = produtoService.criarProduto(dto, descricao);
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
     }
 
     @DeleteMapping("/{id}")

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.mercado.paulistinha.dto.produto.ProdutoCreateDTO;
 import com.mercado.paulistinha.exceptions.EstoqueInsuficienteException;
 import com.mercado.paulistinha.exceptions.ProdutoJaExisteException;
 import com.mercado.paulistinha.exceptions.ProdutoNotFoundException;
@@ -19,10 +20,18 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
-    public Produto salvarProduto(Produto produto) {
-        if (produtoRepository.findByNome(produto.getNome()).isPresent()) {
-            throw new ProdutoJaExisteException("Já existe um produto com o nome: " + produto.getNome());
+    public Produto criarProduto(ProdutoCreateDTO dto, String descricaoOpcional) {
+        if (produtoRepository.findByNome(dto.nome()).isPresent()) {
+            throw new ProdutoJaExisteException("Já existe um produto com o nome: " + dto.nome());
         }
+
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setCategoria(dto.categoria());
+        produto.setQuantidade(dto.quantidade());
+        produto.setDescricao(descricaoOpcional);
+
         return produtoRepository.save(produto);
     }
 

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mercado.paulistinha.dto.login.LoginRequest;
 import com.mercado.paulistinha.dto.login.LoginResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,13 +27,18 @@ public class AuthController {
     private final AuthenticationManager authManager;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(
+            @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest) {
         try {
             Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.cpf(), request.senha())
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            HttpSession session = httpRequest.getSession(true);
+            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
             String role = authentication.getAuthorities()
                                         .iterator()
@@ -43,5 +50,5 @@ public class AuthController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-    }
+    }   
 }
