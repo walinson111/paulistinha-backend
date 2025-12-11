@@ -90,6 +90,18 @@ public class ProdutoController {
         auditLogService.registrar("ADICIONAR_ESTOQUE", atualizado, quantidade);
         return atualizado;
     }
+
+    @PutMapping("/{id}")
+    public Produto atualizarProduto(
+        @PathVariable String id,
+        @RequestBody ProdutoCreateDTO dto) {
+
+        Produto existente = produtoService.buscarPeloId(id);
+        auditLogService.registrar("ATUALIZAR", existente, 0);
+
+        Produto atualizado = produtoService.atualizarProduto(id, dto);
+        return atualizado;
+    }
 }
 
 

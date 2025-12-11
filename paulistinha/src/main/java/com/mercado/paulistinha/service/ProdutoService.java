@@ -95,5 +95,23 @@ public class ProdutoService {
         produto.setQuantidade(produto.getQuantidade() + quantidade);
         return produtoRepository.save(produto);
     }
+
+    public Produto atualizarProduto(String id, ProdutoCreateDTO dto) {
+        Produto existente = produtoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
+        existente.setNome(dto.nome());
+        existente.setPreco(dto.preco());
+        existente.setCategoria(dto.categoria());
+        existente.setQuantidade(dto.quantidade());
+
+        if (dto instanceof ProdutoCreateDTO) {
+            if (dto.descricao() != null) {
+                existente.setDescricao(dto.descricao());
+            }
+        }
+
+        return produtoRepository.save(existente);
+    }
 }
 
