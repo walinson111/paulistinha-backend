@@ -34,13 +34,14 @@ public class ProdutoController {
 
     @GetMapping
     public List<Produto> listar() {
-        auditLogService.registrar("LISTAR", "PRODUTO", "ALL");
         return produtoService.listarProdutos();
     }
 
     @PostMapping
     public Produto criarProduto(@RequestBody ProdutoCreateDTO dto) {
-        return produtoService.criarProduto(dto);
+        Produto novoProduto = produtoService.criarProduto(dto);
+        auditLogService.registrar("CRIAR", novoProduto, 0); 
+        return novoProduto;
     }
 
     @DeleteMapping("/{id}")
@@ -53,28 +54,13 @@ public class ProdutoController {
     @GetMapping("/{id}")
     public Produto buscarPeloId(@PathVariable String id) {
         Produto p = produtoService.buscarPeloId(id);
-        auditLogService.registrar("BUSCAR_POR_ID", p, 0);
         return p;
     }
 
     @GetMapping("/nome")
     public Produto buscarPeloNome(@RequestParam String nome) {
         Produto p = produtoService.buscarPeloNome(nome);
-        auditLogService.registrar("BUSCAR_POR_NOME", p, 0);
         return p;
-    }
-
-    @PostMapping("/lote")
-    public List<Produto> salvarLote(@RequestBody List<Produto> produtos) {
-        List<Produto> salvos = produtoService.salvarLote(produtos);
-        auditLogService.registrar("CRIAR_LOTE", "PRODUTO", "LOTE");
-        return salvos;
-    }
-
-    @DeleteMapping("/lote")
-    public void deletarLote(){
-        produtoService.deletarLote();
-        auditLogService.registrar("DELETAR_LOTE", "PRODUTO", "LOTE");
     }
 
     @PutMapping("/retirar/{nome}")
@@ -95,13 +81,10 @@ public class ProdutoController {
     public Produto atualizarProduto(
         @PathVariable String id,
         @RequestBody ProdutoCreateDTO dto) {
-
-        Produto existente = produtoService.buscarPeloId(id);
-        auditLogService.registrar("ATUALIZAR", existente, 0);
+        Produto produtoAntesDaAtualizacao = produtoService.buscarPeloId(id);
+        auditLogService.registrar("EDITAR", produtoAntesDaAtualizacao, 0);
 
         Produto atualizado = produtoService.atualizarProduto(id, dto);
         return atualizado;
     }
 }
-
-

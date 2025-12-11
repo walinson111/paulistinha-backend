@@ -34,6 +34,14 @@ public class AuditLogService {
     }
 
     public void registrar(String acao, Produto produto, int quantidadeAlterada) {
+        if (!acao.equals("CRIAR") && 
+            !acao.equals("EDITAR") && 
+            !acao.equals("DELETAR") && 
+            !acao.equals("ADICIONAR_ESTOQUE") && 
+            !acao.equals("RETIRAR_ESTOQUE")) {
+            
+            return; 
+        }
 
         Funcionario funcionario = getFuncionarioLogado();
 
@@ -54,7 +62,7 @@ public class AuditLogService {
                 "Retirou " + quantidadeAlterada + " unidades do produto " + produto.getNome();
 
             default ->
-                "Ação não identificada no produto " + produto.getNome();
+                "Ação de produto/estoque não identificada: " + acao + " no produto " + produto.getNome();
         };
 
         AuditLog log = new AuditLog();
@@ -73,46 +81,5 @@ public class AuditLogService {
 
         repo.save(log);
     }
-
-    public void registrar(String acao, String entidade, String identificador) {
-
-        Funcionario funcionario = getFuncionarioLogado();
-
-        String descricao = switch (acao) {
-            case "LISTAR" ->
-                "Listou todos os registros de " + entidade;
-
-            case "BUSCAR" ->
-                "Buscou o registro de " + entidade + " com valor: " + identificador;
-
-            case "CRIAR_LOTE" ->
-                "Criou um lote de " + entidade;
-
-            case "DELETAR_LOTE" ->
-                "Deletou um lote inteiro de " + entidade;
-
-            default ->
-                "Executou ação '" + acao + "' em " + entidade;
-        };
-
-        AuditLog log = new AuditLog();
-        log.setAcao(acao);
-        log.setDescricao(descricao);
-        log.setDataHora(LocalDateTime.now());
-
-        if (entidade.equalsIgnoreCase("PRODUTO")) {
-            log.setProdutoId(identificador);
-            log.setProdutoNome(identificador);
-        }
-
-        if (funcionario != null) {
-            log.setFuncionarioId(funcionario.getId());
-            log.setFuncionarioNome(funcionario.getNome());
-            log.setFuncionarioCpf(funcionario.getCpf());
-        }
-
-        repo.save(log);
-    }
+    
 }
-
-
